@@ -1,0 +1,20 @@
+{{!< main}} <h1>Panel de Administración</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.email}}</td>
+                <td>{{this.name}}</td>
+                <td>{{this.rol}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
