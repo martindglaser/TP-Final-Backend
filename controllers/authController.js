@@ -35,7 +35,8 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email: email });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            res.send('Inicio de sesión exitoso');
+            req.session.user = user; // Almacenar los datos del usuario en la sesión
+            res.redirect('/'); // Redireccionar a la página principal o a donde desees
         } else {
             res.send('Credenciales incorrectas');
         }

@@ -8,6 +8,7 @@ const hbs = require('express-handlebars');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');  // Importar las rutas de usuarios
 
+
 const app = express();
 
 mongoose.connect('mongodb://localhost/marketplace', {
@@ -18,13 +19,21 @@ mongoose.connection.on('error', (error) => {
     console.error('MongoDB connection error:', error);
 });
 
+app.engine('hbs', hbs.create({
+    extname: 'hbs',
+    defaultLayout: 'main',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    }
+}).engine);
+
+app.set('view engine', 'hbs');  // Configurar el motor de plantillas Handlebars
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: true }));
-
-app.engine('hbs', hbs.create({ extname: 'hbs', defaultLayout: 'main' }).engine);
-app.set('view engine', 'hbs');
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);  // Usar las rutas de usuarios

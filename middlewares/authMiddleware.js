@@ -10,7 +10,7 @@ module.exports = {
     },
 
     isAdmin: (req, res, next) => {
-        if (req.session.user && req.session.user.rol === 'admin') {
+        if (req.session.user && req.session.user.rol === 'admin') {  // Ajustar a "rol"
             next();
         } else {
             res.redirect('/');
