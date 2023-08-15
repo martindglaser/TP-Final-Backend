@@ -1,16 +1,20 @@
-<!-- views/home.hbs -->
-
-<h1>Productos Disponibles</h1>
-
-<ul>
+<div class="row">
     {{#each products}}
-    <li>
-        <h2>{{this.name}}</h2>
-        <p>{{this.description}}</p>
-        <p>Precio: ${{this.price}}</p>
-        {{#if ../isAdminOrOwner}}
-        <a href="/products/{{this._id}}/delete">Eliminar</a>
-        {{/if}}
-    </li>
+    <div class="col-sm-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{name}}</h5>
+                <p class="card-text">{{description}}</p>
+                <p class="card-text">{{price}} USD</p>
+                {{#if isAdminOrOwner}}
+                <a href="/products/{{_id}}/delete" class="btn btn-danger">Eliminar</a>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    {{#if_eq (inc @index) 3}}
+</div>
+<div class="row">
+    {{/if_eq}}
     {{/each}}
-</ul>
+</div>

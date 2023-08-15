@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');  // Importar las rutas de usuarios
 const productRoutes = require('./routes/productRoutes');  // Importar las rutas de productos
 //const authMiddleware = require('./middlewares/authMiddleware');  // Importar el middleware de autenticación
+const handlebarsHelpers = require('./handlebarsHelpers');
 
 const app = express();
 
@@ -26,10 +27,16 @@ app.engine('hbs', hbs.create({
     runtimeOptions: {
         allowProtoPropertiesByDefault: true,
         allowProtoMethodsByDefault: true,
-    }
+    },
+    helpers: handlebarsHelpers
 }).engine);
 
+
+
 app.set('view engine', 'hbs');  // Configurar el motor de plantillas Handlebars
+
+app.use(express.static('/css/bootstrap.min.css'));
+app.use(express.static('/js/bootstrap.min.js'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

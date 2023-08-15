@@ -1,5 +1,7 @@
 // controllers/productController.js
 
+const { isAdminOrOwner } = require('../middlewares/authMiddleware');
+const User = require('../models/User');
 const Product = require('../models/Product');
 
 exports.showCreateForm = (req, res) => {
@@ -8,7 +10,7 @@ exports.showCreateForm = (req, res) => {
 
 exports.createProduct = async (req, res) => {
     const { name, description, price } = req.body;
-    const owner = req.session.user.email; // Obtén el propietario desde la sesión del usuario
+    const owner = req.session.user._id; // Obtén el ID del usuario desde la sesión
 
     try {
         const product = new Product({
@@ -19,11 +21,18 @@ exports.createProduct = async (req, res) => {
         });
         await product.save();
 
+        // Agrega el ID del producto a la lista de productos del usuario
+        const user = await User.findById(owner);
+        user.products.push(product._id);
+        await user.save();
+
         res.redirect('/products/all');
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Error en la creación del producto' });
     }
 };
+
 
 exports.showEditForm = async (req, res) => {
     const productId = req.params.id;
@@ -56,13 +65,19 @@ exports.editProduct = async (req, res) => {
 
 exports.showAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-        res.render('product/all', { products });  // Renderiza la vista "home" y pasa los productos como variable
+        if (req.session.user && req.session.user.products) {
+            const products = await Product.find();
+            res.render('product/all', { products, isAdminOrOwner: req.isAdminOrOwner });
+        } else {
+            // Manejo si el usuario no está definido o no tiene la propiedad 'products'
+            res.status(403).json({ error: 'Acceso no autorizado' });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al cargar los productos' });
     }
 };
+
 
 
 
