@@ -1,0 +1,10 @@
+<!-- views/product/create.hbs -->
+
+{{!< main}} <h1>Alta de Producto</h1>
+
+    <form action="/products/create" method="POST">
+        <input type="text" name="name" placeholder="Nombre">
+        <input type="text" name="description" placeholder="Descripción">
+        <input type="number" name="price" placeholder="Precio">
+        <button type="submit">Crear Producto</button>
+    </form>

@@ -1,0 +1,16 @@
+<!-- views/home.hbs -->
+
+<h1>Productos Disponibles</h1>
+
+<ul>
+    {{#each products}}
+    <li>
+        <h2>{{this.name}}</h2>
+        <p>{{this.description}}</p>
+        <p>Precio: ${{this.price}}</p>
+        {{#if ../isAdminOrOwner}}
+        <a href="/products/{{this._id}}/delete">Eliminar</a>
+        {{/if}}
+    </li>
+    {{/each}}
+</ul>

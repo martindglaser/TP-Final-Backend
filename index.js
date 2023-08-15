@@ -7,7 +7,8 @@ const session = require('express-session');
 const hbs = require('express-handlebars');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');  // Importar las rutas de usuarios
-
+const productRoutes = require('./routes/productRoutes');  // Importar las rutas de productos
+//const authMiddleware = require('./middlewares/authMiddleware');  // Importar el middleware de autenticación
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: tr
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);  // Usar las rutas de usuarios
+app.use('/products', productRoutes);  // Usar las rutas de productos
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

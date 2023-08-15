@@ -1,0 +1,10 @@
+<!-- views/product/edit.hbs -->
+
+{{!< main}} <h1>Edición de Producto</h1>
+
+    <form action="/products/edit/{{product._id}}" method="POST">
+        <input type="text" name="name" value="{{product.name}}">
+        <input type="text" name="description" value="{{product.description}}">
+        <input type="number" name="price" value="{{product.price}}">
+        <button type="submit">Guardar Cambios</button>
+    </form>
