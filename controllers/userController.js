@@ -13,10 +13,10 @@ exports.getAllUsers = async (req, res) => {
 
 exports.deleteInactiveUsers = async (req, res) => {
     try {
-        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-        const deletedUsers = await User.deleteMany({ lastLoggedIn: { $lt: fiveMinutesAgo } });
+        const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+        const deletedUsers = await User.deleteMany({ lastLoggedIn: { $lt: tenMinutesAgo } });
 
-        res.json({ message: `${deletedUsers.deletedCount} usuarios inactivos eliminados` });
+        res.json({ message: `${deletedUsers.deletedCount} usuarios inactivos eliminados ${deletedUsers}` });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al eliminar usuarios inactivos' });

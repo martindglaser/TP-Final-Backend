@@ -30,7 +30,7 @@
                     const response = await fetch('/admin/deleteInactiveUsers', {
                         method: 'DELETE',
                     });
-                    console.log(response)
+
                     if (response.ok) {
                         const data = await response.json();
                         alert(data.message);

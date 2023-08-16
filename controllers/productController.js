@@ -88,8 +88,8 @@ exports.editProduct = async (req, res) => {
 
 exports.showAllProducts = async (req, res) => {
     try {
-        console.log(req.session)
-        if (req.session.user && req.session.user.products) {
+        //console.log(req.session)
+        if (req.session.user) {
             const products = await Product.find();
             res.render('product/all', { products, isAdminOrOwner: req.isAdminOrOwner });
         } else {

@@ -18,34 +18,32 @@ module.exports = {
             res.redirect('/');
         }
     },
+    isAdminOrPremium: (req, res, next) => {
+        if (req.session.user && (req.session.user.rol === 'admin' || req.session.user.rol === 'premium')) {
+            next();
+        } else {
+            res.redirect('/');
+        }
+    },
 
     isAdminOrOwner: async (req, res, next) => {
         try {
-            console.log('Middleware isAdminOrOwner ejecutándose');
-
             if (req.session.user) {
                 const user = req.session.user;
-                console.log('Usuario en sesión:', user);
-
                 const isAdmin = user.rol === 'admin';
-                console.log('¿Es administrador?', isAdmin);
-
                 const productId = req.params.id;
-                console.log('ID del producto:', productId);
 
-                // Consulta la base de datos para obtener el propietario del producto
+                // Consultar la base de datos para obtener el propietario del producto
                 const product = await Product.findById(productId);
-                console.log('Propietario del producto:', product.owner);
-
-                const isOwner = product && product.owner === user.email;
-                console.log('¿Es propietario?', isOwner);
-
-                if (isAdmin || isOwner) {
+                console.log(product.owner);
+                if (isAdmin || (product && product.owner === user.email)) {
                     req.isAdminOrOwner = true;
-                    console.log('isAdminOrOwner = true');
+                    next();
+                } else {
+                    res.redirect('/');
                 }
             }
-            next();
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error en la verificación de permisos' });
