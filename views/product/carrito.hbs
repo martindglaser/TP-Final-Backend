@@ -15,13 +15,43 @@
             <tr>
                 <td>{{this.product.name}}</td>
                 <td>{{this.quantity}}</td>
-                <td>{{this.product.price}} USD</td>
-                <td>{{multiplicar this.product.price this.quantity}} USD</td>
+                <td>${{this.product.price}}</td>
+                <td>${{multiplicar this.product.price this.quantity}}</td>
             </tr>
             {{/each}}
+            <tr>
+                <td colspan="3"></td>
+                <td>${{totalPrice}}</td>
+            </tr>
         </tbody>
     </table>
     {{else}}
     <p>Tu carrito está vacío.</p>
     {{/if}}
+    <button id="vaciarCarrito" class="btn btn-danger">Vaciar Carrito</button>
     <button class="btn btn-success">Finalizar la Compra</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const deleteInactiveBtn = document.getElementById('vaciarCarrito');
+
+            deleteInactiveBtn.addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/products/vaciar-carrito', {
+                        method: 'DELETE',
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert(data.message);
+                        location.reload()
+                    } else {
+                        alert('Error al vaciar el carrito.');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('Error al realizar la solicitud.');
+                }
+            });
+        });
+    </script>

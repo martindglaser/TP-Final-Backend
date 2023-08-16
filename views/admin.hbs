@@ -3,20 +3,20 @@
     <div>
         <button id="deleteInactiveBtn" class="btn btn-danger">Eliminar Usuarios Inactivos</button>
     </div>
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <th>Correo</th>
-                <th>Nombre</th>
                 <th>Rol</th>
+                <th>Ultima Actividad</th>
             </tr>
         </thead>
         <tbody>
             {{#each users}}
             <tr>
                 <td>{{this.email}}</td>
-                <td>{{this.nombre}}</td>
                 <td>{{this.rol}}</td>
+                <td>{{formatDate this.lastLoggedIn}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -34,6 +34,7 @@
                     if (response.ok) {
                         const data = await response.json();
                         alert(data.message);
+                        location.reload()
                     } else {
                         alert('Error al eliminar usuarios inactivos.');
                     }

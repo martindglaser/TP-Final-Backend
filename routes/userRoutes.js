@@ -1,13 +1,11 @@
-// routes/userRoutes.js
+// // routes/userRoutes.js
 
-const express = require('express');
-const router = express.Router();
-const userController = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware');
+// const express = require('express');
+// const router = express.Router();
+// const userController = require('../controllers/userController');
+// const authMiddleware = require('../middlewares/authMiddleware');
 
-router.get('/all', authMiddleware.isAdmin, userController.getAllUsers);
-
-//router.delete('/deleteInactiveUsers', userController.deleteInactiveUsers);
+// router.get('/all', authMiddleware.isAdmin, userController.getAllUsers);
 
 
-module.exports = router;
+// module.exports = router;

@@ -15,18 +15,26 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                {{#if (isAuthenticated user)}}
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Productos</a>
                 </li>
+                {{/if}}
+                {{#if (isAdminOrPremium user)}}
                 <li class="nav-item">
                     <a class="nav-link" href="/products/create">Crear Producto</a>
                 </li>
+                {{/if}}
+                {{#if (isAdmin user)}}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/admin">Usuarios</a>
                 </li>
+                {{/if}}
+                {{#if (isAuthenticated user)}}
                 <li class="nav-item">
                     <a class="nav-link" href="/products/cart">Carrito</a>
                 </li>
+                {{/if}}
             </ul>
         </div>
     </nav>

@@ -16,6 +16,7 @@ exports.register = async (req, res) => {
             email: email,
             password: hashedPassword,
             rol: 'regular',
+            lastLoggedIn: new Date(),
         });
         await user.save();
 
@@ -35,11 +36,12 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email: email });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            req.session.user = user; // Almacenar los datos del usuario en la sesión
-            // Actualiza el campo lastConnection a la hora actual
-            user.lastConnection = new Date();
+            req.session.user = user;
+
+            user.lastLoggedIn = new Date();
             await user.save();
-            res.redirect('/'); // Redireccionar a la página principal o a donde desees
+
+            res.redirect('/');
         } else {
             res.send('Credenciales incorrectas');
         }

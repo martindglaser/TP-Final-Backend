@@ -1,11 +1,12 @@
 // controllers/productController.js
-
+const nodemailer = require('nodemailer');
 const { isAdminOrOwner } = require('../middlewares/authMiddleware');
 const User = require('../models/User');
 const Product = require('../models/Product');
 
 exports.showCreateForm = (req, res) => {
-    res.render('product/create');
+    const user = req.session.user;
+    res.render('product/create', { user });
 };
 exports.showCart = async (req, res) => {
     try {
@@ -15,7 +16,14 @@ exports.showCart = async (req, res) => {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        res.render('product/carrito', { user });
+        let totalPrice = 0;
+
+        user.cart.forEach(item => {
+            totalPrice += item.quantity * item.product.price;
+        });
+
+
+        res.render('product/carrito', { user, totalPrice });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al cargar el carrito' });
@@ -48,7 +56,7 @@ exports.createProduct = async (req, res) => {
         user.products.push(product._id);
         await user.save();
 
-        res.redirect('/products/all');
+        res.redirect('/');
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error en la creación del producto' });
@@ -59,10 +67,10 @@ exports.createProduct = async (req, res) => {
 
 exports.showEditForm = async (req, res) => {
     const productId = req.params.id;
-
+    const user = req.session.user;
     try {
         const product = await Product.findById(productId);
-        res.render('product/edit', { product });
+        res.render('product/edit', { product, user });
     } catch (error) {
         res.status(500).json({ error: 'Error al mostrar el formulario de edición' });
     }
@@ -88,14 +96,21 @@ exports.editProduct = async (req, res) => {
 
 exports.showAllProducts = async (req, res) => {
     try {
-        //console.log(req.session)
-        if (req.session.user) {
-            const products = await Product.find();
-            res.render('product/all', { products, isAdminOrOwner: req.isAdminOrOwner });
-        } else {
-            // Manejo si el usuario no está definido o no tiene la propiedad 'products'
-            res.status(403).json({ error: 'Acceso no autorizado' });
-        }
+        const products = await Product.find();
+
+        // Obtener el usuario actual de la sesión
+        const user = req.session.user;
+
+        // Agregar una propiedad "isOwner" a cada producto en función del propietario
+        products.forEach(product => {
+            if (user) {
+                product.canModify = user.rol === 'admin' || user.email === product.owner;
+            } else {
+                product.canModify = false;
+            }
+        });
+
+        res.render('product/all', { products, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al cargar los productos' });
@@ -107,6 +122,7 @@ exports.showAllProducts = async (req, res) => {
 
 exports.deleteProduct = async (req, res) => {
     try {
+        //wQI1m8TCLSYrlsNP2UXJ
         const productId = req.params.id;
         const product = await Product.findById(productId);
 
@@ -116,8 +132,11 @@ exports.deleteProduct = async (req, res) => {
 
         // Verifica si el usuario es administrador o el propietario del producto
         if (req.session.user.rol === 'admin' || product.owner === req.session.user.email) {
-            await Product.deleteOne({ _id: productId });  // Usamos deleteOne para eliminar el producto
-            return res.redirect('/products/all');
+            // mandar mail al owner del producto
+
+            await Product.deleteOne({ _id: productId });
+
+            return res.redirect('/');
         } else {
             return res.status(403).json({ error: 'Acceso no autorizado' });
         }
@@ -156,5 +175,27 @@ exports.addToCart = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al agregar producto al carrito' });
+    }
+};
+
+
+
+exports.vaciarCarrito = async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        user.cart = [];
+        await user.save();
+
+        res.status(200).json({ message: 'Carrito vaciado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al vaciar el carrito' });
     }
 };

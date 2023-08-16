@@ -35,7 +35,6 @@ module.exports = {
 
                 // Consultar la base de datos para obtener el propietario del producto
                 const product = await Product.findById(productId);
-                console.log(product.owner);
                 if (isAdmin || (product && product.owner === user.email)) {
                     req.isAdminOrOwner = true;
                     next();
