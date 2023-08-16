@@ -14,14 +14,27 @@ const handlebarsHelpers = require('./handlebarsHelpers');
 const adminRoutes = require('./routes/adminRoutes');
 const indexRoute = require('./routes/indexRoute');
 const app = express();
+const dotenv = require('dotenv');
 
-mongoose.connect('mongodb://localhost/marketplace', {
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: '.env' }); // Cargar las variables de entorno de .env en desarrollo
+}
+
+const dbURL = process.env.NODE_ENV === 'production' ? process.env.DB_URL_PROD : process.env.DB_URL_DEV;
+const debug = process.env.DEBUG === 'true';
+
+
+//const dbUrl = `mongodb://${dbHost}:${dbPort}/marketplace`;
+console.log(dbURL)
+mongoose.connect(dbURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
 mongoose.connection.on('error', (error) => {
     console.error('MongoDB connection error:', error);
 });
+
+
 
 app.engine('hbs', hbs.create({
     extname: 'hbs',
