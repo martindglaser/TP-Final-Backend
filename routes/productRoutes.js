@@ -19,11 +19,10 @@ router.get('/edit/:id', authMiddleware.isAdmin, productController.showEditForm);
 // Ruta para manejar la edición de producto
 router.post('/edit/:id', authMiddleware.isAdmin, productController.editProduct);
 
-router.get('/all', productController.showAllProducts);
+//router.get('/all', productController.showAllProducts);
 
 router.get('/:id/delete', authMiddleware.isAdminOrOwner, productController.deleteProduct);
 
 router.post('/add-to-cart', authMiddleware.isAuthenticated, productController.addToCart);
-
 
 module.exports = router;
