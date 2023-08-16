@@ -7,4 +7,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 router.get('/all', authMiddleware.isAdmin, userController.getAllUsers);
 
+//router.delete('/deleteInactiveUsers', userController.deleteInactiveUsers);
+
+
 module.exports = router;

@@ -1,0 +1,23 @@
+{{!< main}} <h1>Carrito de Compras</h1>
+
+    {{#if user.cart.length}}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each user.cart}}
+            <tr>
+                <td>{{this.quantity}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <p>Tu carrito está vacío.</p>
+    {{/if}}

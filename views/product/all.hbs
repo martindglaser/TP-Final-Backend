@@ -6,15 +6,48 @@
                 <h5 class="card-title">{{name}}</h5>
                 <p class="card-text">{{description}}</p>
                 <p class="card-text">{{price}} USD</p>
-                {{#if isAdminOrOwner}}
+                <form class="add-to-cart-form">
+                    <input type="number" name="quantity" min="1" value="1" class="form-control">
+                    <input type="hidden" name="productId" value="{{_id}}">
+                    <button type="submit" class="btn btn-primary">Agregar al Carrito</button>
+                </form>
                 <a href="/products/{{_id}}/delete" class="btn btn-danger">Eliminar</a>
-                {{/if}}
             </div>
         </div>
     </div>
-    {{#if_eq (inc @index) 3}}
-</div>
-<div class="row">
-    {{/if_eq}}
     {{/each}}
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const addtoCartForms = document.querySelectorAll('.add-to-cart-form');
+
+        addtoCartForms.forEach(form => {
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const productId = formData.get('productId');
+                const quantity = formData.get('quantity');
+
+                try {
+                    const response = await fetch('/products/add-to-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId, quantity })
+                    });
+
+                    if (response.ok) {
+                        alert('Producto agregado al carrito');
+                    } else {
+                        alert('Error al agregar producto al carrito');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('Error al realizar la solicitud');
+                }
+            });
+        });
+    });
+</script>

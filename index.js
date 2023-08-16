@@ -10,7 +10,7 @@ const userRoutes = require('./routes/userRoutes');  // Importar las rutas de usu
 const productRoutes = require('./routes/productRoutes');  // Importar las rutas de productos
 //const authMiddleware = require('./middlewares/authMiddleware');  // Importar el middleware de autenticación
 const handlebarsHelpers = require('./handlebarsHelpers');
-
+const adminRoutes = require('./routes/adminRoutes'); // Importa el enrutador
 const app = express();
 
 mongoose.connect('mongodb://localhost/marketplace', {
@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(session({ secret: 'your-secret-key', resave: true, saveUninitialized: true }));
-
+app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);  // Usar las rutas de usuarios
 app.use('/products', productRoutes);  // Usar las rutas de productos

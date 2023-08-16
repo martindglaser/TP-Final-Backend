@@ -36,6 +36,9 @@ exports.login = async (req, res) => {
 
         if (user && await bcrypt.compare(password, user.password)) {
             req.session.user = user; // Almacenar los datos del usuario en la sesión
+            // Actualiza el campo lastConnection a la hora actual
+            user.lastConnection = new Date();
+            await user.save();
             res.redirect('/'); // Redireccionar a la página principal o a donde desees
         } else {
             res.send('Credenciales incorrectas');

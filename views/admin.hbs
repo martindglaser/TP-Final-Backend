@@ -1,5 +1,8 @@
 {{!< main}} <h1>Panel de Administración</h1>
 
+    <div>
+        <button id="deleteInactiveBtn" class="btn btn-danger">Eliminar Usuarios Inactivos</button>
+    </div>
     <table>
         <thead>
             <tr>
@@ -18,3 +21,26 @@
             {{/each}}
         </tbody>
     </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const deleteInactiveBtn = document.getElementById('deleteInactiveBtn');
+
+            deleteInactiveBtn.addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/admin/deleteInactiveUsers', {
+                        method: 'DELETE',
+                    });
+                    console.log(response)
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert(data.message);
+                    } else {
+                        alert('Error al eliminar usuarios inactivos.');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('Error al realizar la solicitud.');
+                }
+            });
+        });
+    </script>

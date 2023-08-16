@@ -7,6 +7,21 @@ const Product = require('../models/Product');
 exports.showCreateForm = (req, res) => {
     res.render('product/create');
 };
+exports.showCart = async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user._id).populate('cart.product');
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        res.render('product/carrito', { user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al cargar el carrito' });
+    }
+};
+
 
 exports.createProduct = async (req, res) => {
     const { name, description, price } = req.body;
@@ -65,6 +80,7 @@ exports.editProduct = async (req, res) => {
 
 exports.showAllProducts = async (req, res) => {
     try {
+        console.log(req.session)
         if (req.session.user && req.session.user.products) {
             const products = await Product.find();
             res.render('product/all', { products, isAdminOrOwner: req.isAdminOrOwner });
@@ -100,5 +116,37 @@ exports.deleteProduct = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al eliminar el producto' });
+    }
+};
+
+
+
+exports.addToCart = async (req, res) => {
+    const { productId, quantity } = req.body;
+
+    try {
+        const user = await User.findById(req.session.user._id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        if (!user.cart) {
+            user.cart = [];
+        }
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+
+        user.cart.push({ product: productId, quantity });
+        await user.save();
+
+        res.status(200).json({ message: 'Producto agregado al carrito' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al agregar producto al carrito' });
     }
 };
