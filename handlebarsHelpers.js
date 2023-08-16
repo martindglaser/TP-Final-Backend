@@ -16,5 +16,8 @@ module.exports = {
             return options.fn(this);
         }
         return options.inverse(this);
-    }
+    },
+    multiplicar: function (a, b) {
+        return a * b;
+    },
 };

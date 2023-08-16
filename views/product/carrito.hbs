@@ -13,7 +13,10 @@
         <tbody>
             {{#each user.cart}}
             <tr>
+                <td>{{this.product.name}}</td>
                 <td>{{this.quantity}}</td>
+                <td>{{this.product.price}} USD</td>
+                <td>{{multiplicar this.product.price this.quantity}} USD</td>
             </tr>
             {{/each}}
         </tbody>
@@ -21,3 +24,4 @@
     {{else}}
     <p>Tu carrito está vacío.</p>
     {{/if}}
+    <button class="btn btn-success">Finalizar la Compra</button>
