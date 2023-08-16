@@ -25,19 +25,26 @@ exports.showCart = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     const { name, description, price } = req.body;
-    const owner = req.session.user._id; // Obtén el ID del usuario desde la sesión
+    const ownerEmail = req.session.user.email;
 
     try {
         const product = new Product({
             name,
             description,
             price,
-            owner,
+            owner: ownerEmail,
         });
         await product.save();
 
-        // Agrega el ID del producto a la lista de productos del usuario
-        const user = await User.findById(owner);
+        const user = await User.findOne({ email: ownerEmail }); // Cambiar findById a findOne
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        if (!user.products) {
+            user.products = []; // Inicializar como un array si es undefined
+        }
+
         user.products.push(product._id);
         await user.save();
 
@@ -47,6 +54,7 @@ exports.createProduct = async (req, res) => {
         res.status(500).json({ error: 'Error en la creación del producto' });
     }
 };
+
 
 
 exports.showEditForm = async (req, res) => {
