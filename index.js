@@ -23,8 +23,6 @@ if (process.env.NODE_ENV !== 'production') {
 const dbURL = process.env.NODE_ENV === 'production' ? process.env.DB_URL_PROD : process.env.DB_URL_DEV;
 const debug = process.env.DEBUG === 'true';
 
-
-//const dbUrl = `mongodb://${dbHost}:${dbPort}/marketplace`;
 console.log(dbURL)
 mongoose.connect(dbURL, {
     useNewUrlParser: true,
@@ -33,8 +31,6 @@ mongoose.connect(dbURL, {
 mongoose.connection.on('error', (error) => {
     console.error('MongoDB connection error:', error);
 });
-
-
 
 app.engine('hbs', hbs.create({
     extname: 'hbs',
